@@ -1,0 +1,108 @@
+ENCS304 Computer Networks — EXP2
+
+
+NETWORK CONFIGURATION
+─────────────────────
+  Device   IP Address       MAC Address         Switch Port
+  PC0      192.168.20.1/24  0005.5e0c.9354      Fa0/1
+  PC1      192.168.20.2/24  0002.166e.0c77      Fa0/2
+  PC2      192.168.20.3/24    —                 Fa0/3
+  Switch0  —                  —               (Layer 2 Device)
+
+
+
+
+
+TASK 2 — FIRST PING: PC0 to PC1 (192.168.20.1 → 192.168.20.2)
+
+
+Event# | Time(sec) | Last Device | At Device | Type | Description
+-------|-----------|-------------|-----------|------|-----------------------------------
+  1    |   0.004   | Switch0     | PC0       | ARP  | ARP Reply delivered to PC0
+  2    |   0.004   | --          | PC0       | ICMP | ICMP Echo Request generated
+  3    |   0.005   | PC0         | Switch0   | ICMP | Switch received Echo Request
+  4    |   0.006   | Switch0     | PC1       | ICMP | Forwarded to PC1
+  5    |   0.007   | PC1         | Switch0   | ICMP | PC1 sent Echo Reply
+  6    |   0.008   | Switch0     | PC0       | ICMP | Echo Reply delivered to PC0
+  7    |   1.008   | --          | PC0       | ICMP | Ping sequence 2 started
+  8    |   1.009   | PC0         | Switch0   | ICMP | Switch received packet
+  9    |   1.010   | Switch0     | PC1       | ICMP | Forwarded to PC1
+ 10    |   1.011   | PC1         | Switch0   | ICMP | Echo Reply sent
+ 11    |   1.012   | Switch0     | PC0       | ICMP | Reply delivered to PC0
+ 12    |   2.013   | --          | PC0       | ICMP | Ping sequence 3 started
+ 13    |   2.014   | PC0         | Switch0   | ICMP | Switch received packet
+ 14    |   2.015   | Switch0     | PC1       | ICMP | Forwarded to PC1
+ 15    |   2.016   | PC1         | Switch0   | ICMP | Echo Reply sent
+ 16    |   2.017   | Switch0     | PC0       | ICMP | Reply delivered to PC0
+ 17    |   3.018   | --          | PC0       | ICMP | Ping sequence 4 started
+ 18    |   3.019   | PC0         | Switch0   | ICMP | Switch received packet
+ 19    |   3.020   | Switch0     | PC1       | ICMP | Forwarded to PC1
+ 20    |   3.021   | PC1         | Switch0   | ICMP | Echo Reply sent
+ 21    |   3.022   | Switch0     | PC0       | ICMP | Reply delivered to PC0
+
+OBSERVATIONS — FIRST PING
+  • ARP Request was sent before 0.004 sec (earlier events, top of list scrolled).
+  • ARP Reply was received by PC0 at 0.004 sec — MAC resolution completed.
+  • ICMP Echo Request began immediately after ARP at 0.004 sec.
+  • Switch forwarded ICMP packets as unicast after MAC addresses were learned.
+  • All 4 ping sequences completed successfully with Echo Request and Reply.
+  • Total events recorded: 21+ (ARP at start + ICMP for all 4 sequences).
+
+
+
+
+TASK 3 — SECOND PING: PC0 to PC1 (ARP Cache Active)
+
+
+Event# | Time(sec) | Last Device | At Device | Type | Description
+-------|-----------|-------------|-----------|------|-----------------------------------
+  1    |   0.000   | --          | PC0       | ICMP | ICMP Echo Request sent directly
+  2    |   0.001   | PC0         | Switch0   | ICMP | Switch received Echo Request
+  3    |   0.002   | Switch0     | PC1       | ICMP | Forwarded to PC1
+  4    |   0.002   | Switch0     | PC2       | ICMP | Also sent to PC2
+  5    |   0.003   | PC1         | Switch0   | ICMP | PC1 sent Echo Reply
+  6    |   0.004   | Switch0     | PC0       | ICMP | Echo Reply delivered to PC0
+  7    |   1.006   | --          | PC0       | ICMP | Ping sequence 2 started
+  8    |   1.007   | PC0         | Switch0   | ICMP | Switch received packet
+  9    |   1.008   | Switch0     | PC1       | ICMP | Forwarded to PC1
+ 10    |   1.009   | PC1         | Switch0   | ICMP | Echo Reply sent
+ 11    |   1.010   | Switch0     | PC0       | ICMP | Reply delivered to PC0
+ 12    |   2.014   | --          | PC0       | ICMP | Ping sequence 3 started
+ 13    |   2.015   | PC0         | Switch0   | ICMP | Switch received packet
+ 14    |   2.016   | Switch0     | PC1       | ICMP | Forwarded to PC1
+ 15    |   2.017   | PC1         | Switch0   | ICMP | Echo Reply sent
+ 16    |   2.018   | Switch0     | PC0       | ICMP | Reply delivered to PC0
+ 17    |   3.018   | --          | PC0       | ICMP | Ping sequence 4 started
+ 18    |   3.019   | PC0         | Switch0   | ICMP | Switch received packet
+ 19    |   3.020   | Switch0     | PC1       | ICMP | Forwarded to PC1
+ 20    |   3.021   | PC1         | Switch0   | ICMP | Echo Reply sent
+ 21    |   3.022   | Switch0     | PC0       | ICMP | Reply delivered to PC0
+
+OBSERVATIONS — SECOND PING
+  • No ARP packets were generated — PC0 already had PC1's MAC in its ARP cache.
+  • ICMP Echo Request was sent immediately at 0.000 sec without any ARP delay.
+  • Switch forwarded all packets using its learned MAC address table.
+  • All 4 ping sequences completed with only ICMP — no broadcast traffic at all.
+  • Total ARP events = 0. Only ICMP traffic observed across all sequences.
+  • Packet delivery was faster and more efficient compared to the first ping.
+
+
+
+
+TASK 4 — SWITCH MAC ADDRESS TABLE 
+
+
+          Mac Address Table
+-------------------------------------------
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+   1    0002.166e.0c77    DYNAMIC     Fa0/2   (PC1)
+   1    0005.5e0c.9354    DYNAMIC     Fa0/1   (PC0)
+
+OBSERVATIONS — MAC ADDRESS TABLE
+  • Two entries are present — PC0 and PC1 (devices involved in the ping).
+  • PC2 has no entry — no traffic was generated from or to PC2.
+  • Type = DYNAMIC — switch learned these addresses automatically from frames.
+  • Fa0/1 is mapped to PC0 (MAC: 0005.5e0c.9354).
+  • Fa0/2 is mapped to PC1 (MAC: 0002.166e.0c77).
+  • Default aging timer = 300 seconds. Entries removed if no traffic is seen.

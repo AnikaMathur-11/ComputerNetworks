@@ -1,0 +1,181 @@
+ENCS304 – Computer Networks
+Assignment 1 – Basic Network Topologies
+Output File: Ping Results and Observations
+========================================
+TASK 1 – Star Topology (Switch)
+
+IP Range Used: 10.10.10.1 – 10.10.10.4 /24
+
+PC0 > ping 10.10.10.2
+
+Reply from 10.10.10.2: bytes=32 time=1ms TTL=128
+Reply from 10.10.10.2: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.2: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.2: bytes=32 time<1ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+Minimum = 0ms, Maximum = 1ms, Average = 0ms
+
+PC0 > ping 10.10.10.3
+
+Reply from 10.10.10.3: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.3: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.3: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.3: bytes=32 time=17ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+Minimum = 0ms, Maximum = 17ms, Average = 4ms
+
+PC0 > ping 10.10.10.4
+
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+Observation:
+
+In the star topology, all PCs successfully communicated with each other without packet loss. The switch dynamically learned MAC addresses and forwarded frames only to the correct destination port after the first transmission. This reduced unnecessary traffic in the network.
+
+A slight delay (17ms) was observed during one ping reply, which may be due to initial ARP resolution or simulation processing delay. Overall, the communication was stable, efficient, and reliable
+
+
+TASK 2 – Hub Topology
+
+IP Range Used: 10.10.10.11 – 10.10.10.14 /24
+
+PC0 > ping 10.10.10.2
+
+Reply from 10.10.10.2: bytes=32 time=3ms TTL=128
+Reply from 10.10.10.2: bytes=32 time=1ms TTL=128
+Reply from 10.10.10.2: bytes=32 time=1ms TTL=128
+Reply from 10.10.10.2: bytes=32 time=1ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+Minimum = 0ms
+Maximum = 3ms
+Average = 1ms
+
+PC0 > ping 10.10.10.3
+
+Reply from 10.10.10.3: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.3: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.3: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.3: bytes=32 time=1ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+Minimum = 0ms
+Maximum = 1ms
+Average = 0ms
+
+PC0 > ping 10.10.10.4
+
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+Reply from 10.10.10.4: bytes=32 time<1ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+Minimum = 0ms
+Maximum = 1ms
+Average = 0ms
+
+Observation:
+
+In the hub-based topology, all PCs were able to communicate successfully with zero packet loss. However, a slightly higher delay (3ms) was observed in one reply, which may occur due to shared bandwidth in the hub environment.
+Unlike a switch, a hub forwards incoming frames to all connected ports. This increases broadcast traffic and may cause collisions in larger networks. Although communication was successful in this small setup, hub topology is less efficient and less scalable compared to switch-based topology.
+
+
+TASK 3 – Ring-like Topology (Switch Loop with STP)
+
+IP Range Used: 10.10.10.4 – 10.10.10.6 /24
+
+PC0 > ping 10.10.10.5
+
+Reply from 10.10.10.5: bytes=32 time=12ms TTL=128
+Reply from 10.10.10.5: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.5: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.5: bytes=32 time=6ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+Minimum = 6ms
+Maximum = 12ms
+Average = 7ms
+
+PC0 > ping 10.10.10.4
+
+
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+Minimum = 6ms
+Maximum = 6ms
+Average = 6ms
+
+Observation:
+
+In the ring-like topology, communication between devices connected to different switches was successful with zero packet loss.
+
+A slightly higher delay (up to 12ms) was observed compared to star topology. This may be due to:
+
+Frame traversal across multiple switches
+
+Initial Spanning Tree Protocol (STP) convergence
+
+Simulation processing delay
+
+Since the switches were connected in a loop, STP automatically blocked one redundant path to prevent broadcast storms. The topology remained stable and efficient.
+
+This experiment shows that ring-like topology provides redundancy while maintaining network stability.
+
+
+TASK 4 – Failure Test (Ring Topology)
+
+After disconnecting one switch link:
+
+PC0 > ping 10.10.10.5
+
+Reply from 10.10.10.5: bytes=32 time=12ms TTL=128
+Reply from 10.10.10.5: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.5: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.5: bytes=32 time=6ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+Minimum = 6ms
+Maximum = 12ms
+Average = 7ms
+
+PC0 > ping 10.10.10.4
+
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+Reply from 10.10.10.4: bytes=32 time=6ms TTL=128
+
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+Minimum = 6ms
+Maximum = 6ms
+Average = 6ms
+
+Observation:
+
+Even after disconnecting one link in the ring topology, communication continued successfully with zero packet loss.
+
+The alternate path was automatically activated, and Spanning Tree Protocol (STP) recalculated the topology to maintain connectivity.
+
+Although the delay remained slightly higher compared to star topology (maximum 12ms), the network stayed operational and stable.
+
+This demonstrates that ring-like topology provides redundancy and better fault tolerance compared to simple topologies without backup paths
